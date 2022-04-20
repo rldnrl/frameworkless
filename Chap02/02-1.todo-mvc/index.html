@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo MVC</title>
+</head>
+<body>
+    <section class="todoapp">
+        <header class="header">
+            <h1>todos</h1>
+            <input class="new-todo" type="text" placeholder="해야할 일은 뭔가요?">
+        </header>
+        <section class="main">
+            <input type="checkbox" id="toggle-id" class="toggle-id">
+            <label for="toggle-id">Mark all as complete</label>
+        </section>
+        <ul class="todo-list"></ul>
+        <footer class="footer">
+            <span class="todo-count"></span>
+            <ul class="filters">
+                <li>
+                    <a href="#/">All</a>
+                </li>
+                <li>
+                    <a href="#/active">Active</a>
+                </li>
+                <li>
+                    <a href="#/complete">Completed</a>
+                </li>
+            </ul>
+            <button class="clear-completed">
+                Clear Completed
+            </button>
+        </footer>
+    </section>
+    <footer class="info">
+        <p>Double-click to edit a todo</p>
+    </footer>
+    <script type="module" src="view.js"></script>
+</body>
+</html>
