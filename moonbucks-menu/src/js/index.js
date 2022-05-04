@@ -79,7 +79,11 @@ function App() {
 
   $('#espresso-menu-submit-button').addEventListener('click', addMenuName)
 
+  $('#espresso-menu-list').addEventListener('click', (e) => {
+    if (e.target.classList.contains('menu-edit-button')) {
+      editMenuName(e)
     }
+
   })
 
   // 메뉴 입력값을 받는다.
