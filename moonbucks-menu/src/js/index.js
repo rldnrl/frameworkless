@@ -84,6 +84,9 @@ function App() {
       editMenuName(e)
     }
 
+    if (e.target.classList.contains('menu-remove-button')) {
+      removeMenuName(e)
+    }
   })
 
   // 메뉴 입력값을 받는다.
