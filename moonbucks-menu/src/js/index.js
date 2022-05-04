@@ -5,12 +5,6 @@
 const $ = (selector) => document.querySelector(selector)
 
 function App() {
-  // form 태그가 id 값을 전송하는 것을 막는다.
-  $('#espresso-menu-form')
-    .addEventListener('submit', (e) => {
-      e.preventDefault()
-    })
-
   function updateMenuCount() {
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
     $('.menu-count').innerText = `총 ${menuCount}개`
@@ -53,24 +47,45 @@ function App() {
     $('#espresso-menu-name').value = ''
   }
 
-  $('#espresso-menu-submit-button')
-    .addEventListener('click', () => {
-      addMenuName()
+  /**
+   *
+   * @param {Event} e
+   * Menu를 수정하는 함수
+   */
+  function editMenuName(e) {
+    const $menuName = e.target.closest('li').querySelector('.menu-name')
+    const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
+    $menuName.innerText = editedMenuName
+  }
+
+  /**
+   *
+   * @param {Event} e
+   * Menu를 삭제하는 함수
+   */
+  function removeMenuName(e) {
+    const $menuName = e.target.closest('li')
+    if (confirm('정말 삭제하시겠습니까?')) {
+      $menuName.remove()
+    }
+    updateMenuCount()
+  }
+
+  // form 태그가 id 값을 전송하는 것을 막는다.
+  $('#espresso-menu-form')
+    .addEventListener('submit', (e) => {
+      e.preventDefault()
     })
+
+  $('#espresso-menu-submit-button').addEventListener('click', addMenuName)
 
   $('#espresso-menu-list').addEventListener('click', (e) => {
     if (e.target.classList.contains('menu-edit-button')) {
-      const $menuName = e.target.closest('li').querySelector('.menu-name')
-      const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
-      $menuName.innerText = editedMenuName
+      editMenuName(e)
     }
 
     if (e.target.classList.contains('menu-remove-button')) {
-      const $menuName = e.target.closest('li')
-      if (confirm('정말 삭제하시겠습니까?')) {
-        $menuName.remove()
-      }
-      updateMenuCount()
+      removeMenuName(e)
     }
   })
 
