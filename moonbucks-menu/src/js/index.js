@@ -58,12 +58,19 @@ function App() {
     $menuName.innerText = editedMenuName
   }
 
-    if (e.target.classList.contains('menu-remove-button')) {
-      const $menuName = e.target.closest('li')
-      if (confirm('정말 삭제하시겠습니까?')) {
-        $menuName.remove()
-      }
-      updateMenuCount()
+  /**
+   *
+   * @param {Event} e
+   * Menu를 삭제하는 함수
+   */
+  function removeMenuName(e) {
+    const $menuName = e.target.closest('li')
+    if (confirm('정말 삭제하시겠습니까?')) {
+      $menuName.remove()
+    }
+    updateMenuCount()
+  }
+
   // form 태그가 id 값을 전송하는 것을 막는다.
   $('#espresso-menu-form')
     .addEventListener('submit', (e) => {
