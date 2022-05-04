@@ -54,6 +54,14 @@ function App() {
       addMenuName()
     })
 
+  $('#espresso-menu-list').addEventListener('click', (e) => {
+    if (e.target.classList.contains('menu-edit-button')) {
+      const $menuName = e.target.closest('li').querySelector('.menu-name')
+      const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
+      $menuName.innerText = editedMenuName
+    }
+  })
+
   // 메뉴 입력값을 받는다.
   $("#espresso-menu-name")
     .addEventListener("keypress", (e) => {
