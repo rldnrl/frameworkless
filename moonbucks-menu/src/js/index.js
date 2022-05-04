@@ -5,12 +5,6 @@
 const $ = (selector) => document.querySelector(selector)
 
 function App() {
-  // form 태그가 id 값을 전송하는 것을 막는다.
-  $('#espresso-menu-form')
-    .addEventListener('submit', (e) => {
-      e.preventDefault()
-    })
-
   function updateMenuCount() {
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
     $('.menu-count').innerText = `총 ${menuCount}개`
@@ -71,6 +65,12 @@ function App() {
         $menuName.remove()
       }
       updateMenuCount()
+  // form 태그가 id 값을 전송하는 것을 막는다.
+  $('#espresso-menu-form')
+    .addEventListener('submit', (e) => {
+      e.preventDefault()
+    })
+
     }
   })
 
