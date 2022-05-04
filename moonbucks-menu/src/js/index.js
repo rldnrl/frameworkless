@@ -77,6 +77,8 @@ function App() {
       e.preventDefault()
     })
 
+  $('#espresso-menu-submit-button').addEventListener('click', addMenuName)
+
     }
   })
 
