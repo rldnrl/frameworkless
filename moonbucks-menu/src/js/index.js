@@ -11,6 +11,11 @@ function App() {
       e.preventDefault()
     })
 
+  function updateMenuCount() {
+    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
+    $('.menu-count').innerText = `총 ${menuCount}개`
+  }
+
   function addMenuName() {
     // Input이 빈 값이면 입력을 받지 않는다.
     const espressoMenuName = $("#espresso-menu-name").value
@@ -42,8 +47,7 @@ function App() {
     menuList.insertAdjacentHTML("beforeend", setMenuItemTemplate(espressoMenuName))
 
     // 메뉴 Count 업데이트
-    const menuCount = menuList.querySelectorAll('li').length
-    $('.menu-count').innerText = `총 ${menuCount}개`
+    updateMenuCount()
 
     // Input을 빈 값으로 초기화하기
     $('#espresso-menu-name').value = ''
