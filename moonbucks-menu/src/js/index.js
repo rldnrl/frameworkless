@@ -47,17 +47,16 @@ function App() {
     $('#espresso-menu-name').value = ''
   }
 
-  $('#espresso-menu-submit-button')
-    .addEventListener('click', () => {
-      addMenuName()
-    })
-
-  $('#espresso-menu-list').addEventListener('click', (e) => {
-    if (e.target.classList.contains('menu-edit-button')) {
-      const $menuName = e.target.closest('li').querySelector('.menu-name')
-      const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
-      $menuName.innerText = editedMenuName
-    }
+  /**
+   *
+   * @param {Event} e
+   * Menu를 수정하는 함수
+   */
+  function editMenuName(e) {
+    const $menuName = e.target.closest('li').querySelector('.menu-name')
+    const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
+    $menuName.innerText = editedMenuName
+  }
 
     if (e.target.classList.contains('menu-remove-button')) {
       const $menuName = e.target.closest('li')
