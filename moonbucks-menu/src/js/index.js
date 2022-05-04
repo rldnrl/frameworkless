@@ -64,6 +64,14 @@ function App() {
       const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
       $menuName.innerText = editedMenuName
     }
+
+    if (e.target.classList.contains('menu-remove-button')) {
+      const $menuName = e.target.closest('li')
+      if (confirm('정말 삭제하시겠습니까?')) {
+        $menuName.remove()
+      }
+      updateMenuCount()
+    }
   })
 
   // 메뉴 입력값을 받는다.
