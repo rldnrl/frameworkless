@@ -16,11 +16,13 @@ const store = {
 function App() {
   // State: 변화할 수 있는 데이터
   // - menuName
-  const menu = []
 
-  function updateMenuCount() {
-    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
-    $('.menu-count').innerText = `총 ${menuCount}개`
+  this.menu = {
+    espresso: [],
+    frappuccino: [],
+    blended: [],
+    teavana: [],
+    desert: []
   }
 
   function addMenuName() {
