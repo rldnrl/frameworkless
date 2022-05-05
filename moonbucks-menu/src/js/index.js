@@ -4,6 +4,15 @@
 
 const $ = (selector) => document.querySelector(selector)
 
+const store = {
+  setLocalStorage(menu) {
+    localStorage.setItem('menus', JSON.stringify(menu))
+  },
+  getLocalStorage() {
+    localStorage.getItem('menus')
+  }
+}
+
 function App() {
   function updateMenuCount() {
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
