@@ -32,9 +32,8 @@ function App() {
     render()
   }
 
-    menu.push({ name: espressoMenuName })
-    store.setLocalStorage(menu)
-    const templates = menu.map((menuName, index) => `
+  const render = () => {
+    const templates = this.menu.map((menuName, index) => `
       <li data-menu-id=${index} class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${menuName.name}</span>
         <button
