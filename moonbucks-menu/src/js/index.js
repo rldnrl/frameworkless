@@ -32,10 +32,10 @@ function App() {
       return
     }
 
-    const setMenuItemTemplate = (espressoName) => `
     menu.push({ name: espressoMenuName })
+    const templates = menu.map((menuName) => `
       <li class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${espressoName}</span>
+        <span class="w-100 pl-2 menu-name">${menuName.name}</span>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -49,15 +49,10 @@ function App() {
           삭제
         </button>
       </li>
-    `
+    `).join('')
 
-    const menuList = $('#espresso-menu-list')
-    menuList.insertAdjacentHTML("beforeend", setMenuItemTemplate(espressoMenuName))
-
-    // 메뉴 Count 업데이트
+    $('#espresso-menu-list').innerHTML = templates
     updateMenuCount()
-
-    // Input을 빈 값으로 초기화하기
     $('#espresso-menu-name').value = ''
   }
 
