@@ -24,9 +24,9 @@ function App() {
   }
 
   function addMenuName() {
-    // Input이 빈 값이면 입력을 받지 않는다.
     const espressoMenuName = $("#espresso-menu-name").value
 
+    // Input이 빈 값이면 입력을 받지 않는다.
     if (espressoMenuName === '') {
       alert('값을 입력해주세요')
       return
