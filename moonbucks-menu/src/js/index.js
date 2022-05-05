@@ -14,6 +14,10 @@ const store = {
 }
 
 function App() {
+  // State: 변화할 수 있는 데이터
+  // - menuName
+  const menu = []
+
   function updateMenuCount() {
     const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
     $('.menu-count').innerText = `총 ${menuCount}개`
@@ -29,6 +33,7 @@ function App() {
     }
 
     const setMenuItemTemplate = (espressoName) => `
+    menu.push({ name: espressoMenuName })
       <li class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${espressoName}</span>
         <button
