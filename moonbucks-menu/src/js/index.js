@@ -6,10 +6,10 @@ const $ = (selector) => document.querySelector(selector)
 
 const store = {
   setLocalStorage(menu) {
-    localStorage.setItem('menus', JSON.stringify(menu))
+    localStorage.setItem('menu', JSON.stringify(menu))
   },
   getLocalStorage() {
-    localStorage.getItem('menus')
+    return localStorage.getItem('menu')
   }
 }
 
