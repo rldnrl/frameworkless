@@ -34,8 +34,8 @@ function App() {
 
     menu.push({ name: espressoMenuName })
     store.setLocalStorage(menu)
-    const templates = menu.map((menuName) => `
-      <li class="menu-list-item d-flex items-center py-2">
+    const templates = menu.map((menuName, index) => `
+      <li data-menu-id=${index} class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 menu-name">${menuName.name}</span>
         <button
           type="button"
@@ -63,8 +63,12 @@ function App() {
    * Menu를 수정하는 함수
    */
   function editMenuName(e) {
+    const menuId = e.target.closest('li').dataset.menuId
     const $menuName = e.target.closest('li').querySelector('.menu-name')
     const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
+    if (!editedMenuName) return
+    menu[menuId].name = editedMenuName
+    store.setLocalStorage(menu)
     $menuName.innerText = editedMenuName
   }
 
