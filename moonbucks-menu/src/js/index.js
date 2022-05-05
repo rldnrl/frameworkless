@@ -25,14 +25,12 @@ function App() {
     desert: []
   }
 
-  function addMenuName() {
-    const espressoMenuName = $("#espresso-menu-name").value
-
-    // Input이 빈 값이면 입력을 받지 않는다.
-    if (espressoMenuName === '') {
-      alert('값을 입력해주세요')
-      return
+  this.init = () => {
+    if (JSON.parse(store.getLocalStorage()).length > 0) {
+      this.menu = JSON.parse(store.getLocalStorage())
     }
+    render()
+  }
 
     menu.push({ name: espressoMenuName })
     store.setLocalStorage(menu)
@@ -56,6 +54,26 @@ function App() {
 
     $('#espresso-menu-list').innerHTML = templates
     updateMenuCount()
+  }
+
+  const updateMenuCount = () => {
+    const menuCount = $('#espresso-menu-list').querySelectorAll('li').length
+    $('.menu-count').innerText = `총 ${menuCount}개`
+  }
+
+  const addMenuName = () => {
+    const espressoMenuName = $("#espresso-menu-name").value
+
+    // Input이 빈 값이면 입력을 받지 않는다.
+    if (espressoMenuName === '') {
+      alert('값을 입력해주세요')
+      return
+    }
+
+    this.menu.push({ name: espressoMenuName })
+    store.setLocalStorage(this.menu)
+
+    render()
     $('#espresso-menu-name').value = ''
   }
 
@@ -64,13 +82,13 @@ function App() {
    * @param {Event} e
    * Menu를 수정하는 함수
    */
-  function editMenuName(e) {
+  const editMenuName = (e) => {
     const menuId = e.target.closest('li').dataset.menuId
     const $menuName = e.target.closest('li').querySelector('.menu-name')
     const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
     if (!editedMenuName) return
-    menu[menuId].name = editedMenuName
-    store.setLocalStorage(menu)
+    this.menu[menuId].name = editedMenuName
+    store.setLocalStorage(this.menu)
     $menuName.innerText = editedMenuName
   }
 
@@ -79,12 +97,15 @@ function App() {
    * @param {Event} e
    * Menu를 삭제하는 함수
    */
-  function removeMenuName(e) {
+  const removeMenuName = (e) => {
+    const menuId = e.target.closest('li').dataset.menuId
     const $menuName = e.target.closest('li')
     if (confirm('정말 삭제하시겠습니까?')) {
       $menuName.remove()
+      this.menu.splice(Number(menuId), 1)
+      store.setLocalStorage(this.menu)
+      updateMenuCount()
     }
-    updateMenuCount()
   }
 
   // form 태그가 id 값을 전송하는 것을 막는다.
@@ -115,4 +136,5 @@ function App() {
     })
 }
 
-App()
+const app = new App()
+app.init()
