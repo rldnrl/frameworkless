@@ -1,29 +1,27 @@
-import { $ } from './utils'
-import store from './store'
+import { $ } from './utils.js'
+import store from './store.js'
 
-function App() {
-  // State: 변화할 수 있는 데이터
-  // - menuName
-
-  this.menu = {
-    espresso: [],
-    frappuccino: [],
-    blended: [],
-    teavana: [],
-    desert: []
+class App {
+  constructor() {
+    this.menu = {
+      espresso: [],
+      frappuccino: [],
+      blended: [],
+      teavana: [],
+      desert: []
+    }
+    this.currentCategory = 'espresso'
   }
 
-  this.currentCategory = 'espresso'
-
-  this.init = () => {
+  init() {
     if (store.getLocalStorage()) {
       this.menu = JSON.parse(store.getLocalStorage())
     }
-    render()
-    initEventListener()
+    this.render()
+    this.initEventListener()
   }
 
-  const render = () => {
+  render() {
     const templates = this.menu[this.currentCategory].map((menuName, index) => `
       <li data-menu-id=${index} class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 ${this.menu[this.currentCategory][index].soldOut ? 'sold-out' : ''} menu-name">${menuName.name}</span>
@@ -49,15 +47,15 @@ function App() {
     `).join('')
 
     $('#menu-list').innerHTML = templates
-    updateMenuCount()
+    this.updateMenuCount()
   }
 
-  const updateMenuCount = () => {
+  updateMenuCount() {
     const menuCount = this.menu[this.currentCategory].length
     $('.menu-count').innerText = `총 ${menuCount}개`
   }
 
-  const addMenuName = () => {
+  addMenuName() {
     const menuName = $("#menu-name").value
 
     // Input이 빈 값이면 입력을 받지 않는다.
@@ -69,7 +67,7 @@ function App() {
     this.menu[this.currentCategory].push({ name: menuName })
     store.setLocalStorage(this.menu)
 
-    render()
+    this.render()
     $('#menu-name').value = ''
   }
 
@@ -78,14 +76,14 @@ function App() {
    * @param {Event} e
    * Menu를 수정하는 함수
    */
-  const editMenuName = (e) => {
+  editMenuName(e) {
     const menuId = e.target.closest('li').dataset.menuId
     const $menuName = e.target.closest('li').querySelector('.menu-name')
     const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
     if (!editedMenuName) return
     this.menu[this.currentCategory][menuId].name = editedMenuName
     store.setLocalStorage(this.menu)
-    render()
+    this.render()
   }
 
   /**
@@ -93,49 +91,48 @@ function App() {
    * @param {Event} e
    * Menu를 삭제하는 함수
    */
-  const removeMenuName = (e) => {
+  removeMenuName(e) {
     const menuId = e.target.closest('li').dataset.menuId
-    const $menuName = e.target.closest('li')
     if (confirm('정말 삭제하시겠습니까?')) {
       this.menu[this.currentCategory].splice(Number(menuId), 1)
       store.setLocalStorage(this.menu)
-      render()
-      updateMenuCount()
+      this.render()
+      this.updateMenuCount()
     }
   }
 
   /**
    * @param {Event} e
    */
-  const soldOutMenu = (e) => {
+  soldOutMenu(e) {
     const menuId = e.target.closest('li').dataset.menuId
     this.menu[this.currentCategory][menuId].soldOut = !this.menu[this.currentCategory][menuId].soldOut
     store.setLocalStorage(this.menu)
-    render()
+    this.render()
   }
 
-  const initEventListener = () => {
+  initEventListener() {
     // form 태그가 id 값을 전송하는 것을 막는다.
     $('#menu-form')
       .addEventListener('submit', (e) => {
         e.preventDefault()
       })
 
-    $('#menu-submit-button').addEventListener('click', addMenuName)
+    $('#menu-submit-button').addEventListener('click', this.addMenuName)
 
     $('#menu-list').addEventListener('click', (e) => {
       if (e.target.classList.contains('menu-edit-button')) {
-        editMenuName(e)
+        this.editMenuName(e)
         return
       }
 
       if (e.target.classList.contains('menu-remove-button')) {
-        removeMenuName(e)
+        this.removeMenuName(e)
         return
       }
 
       if (e.target.classList.contains('menu-sold-out-button')) {
-        soldOutMenu(e)
+        this.soldOutMenu(e)
         return
       }
     })
@@ -146,7 +143,7 @@ function App() {
         // q 버튼을 눌렀을 때, alert 창이 뜨게 돼서 예외 처리
         if (e.key !== 'Enter') return
 
-        addMenuName()
+        this.addMenuName()
       })
 
     $('nav').addEventListener('click', (e) => {
@@ -155,7 +152,7 @@ function App() {
         const categoryName = e.target.dataset.categoryName
         this.currentCategory = categoryName
         $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`
-        render()
+        this.render()
       }
     })
   }
