@@ -1,17 +1,5 @@
-/**
- * @param {string} selector
- */
-
-const $ = (selector) => document.querySelector(selector)
-
-const store = {
-  setLocalStorage(menu) {
-    localStorage.setItem('menu', JSON.stringify(menu))
-  },
-  getLocalStorage() {
-    return localStorage.getItem('menu')
-  }
-}
+import { $ } from './utils'
+import store from './store'
 
 function App() {
   // State: 변화할 수 있는 데이터
@@ -32,12 +20,19 @@ function App() {
       this.menu = JSON.parse(store.getLocalStorage())
     }
     render()
+    initEventListener()
   }
 
   const render = () => {
     const templates = this.menu[this.currentCategory].map((menuName, index) => `
       <li data-menu-id=${index} class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 menu-name">${menuName.name}</span>
+        <span class="w-100 pl-2 ${this.menu[this.currentCategory][index].soldOut ? 'sold-out' : ''} menu-name">${menuName.name}</span>
+        <button
+          type="button"
+          class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
+        >
+          품절
+        </button>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-edit-button"
@@ -58,7 +53,7 @@ function App() {
   }
 
   const updateMenuCount = () => {
-    const menuCount = $('#menu-list').querySelectorAll('li').length
+    const menuCount = this.menu[this.currentCategory].length
     $('.menu-count').innerText = `총 ${menuCount}개`
   }
 
@@ -90,7 +85,7 @@ function App() {
     if (!editedMenuName) return
     this.menu[this.currentCategory][menuId].name = editedMenuName
     store.setLocalStorage(this.menu)
-    $menuName.innerText = editedMenuName
+    render()
   }
 
   /**
@@ -102,49 +97,68 @@ function App() {
     const menuId = e.target.closest('li').dataset.menuId
     const $menuName = e.target.closest('li')
     if (confirm('정말 삭제하시겠습니까?')) {
-      $menuName.remove()
       this.menu[this.currentCategory].splice(Number(menuId), 1)
       store.setLocalStorage(this.menu)
+      render()
       updateMenuCount()
     }
   }
 
-  // form 태그가 id 값을 전송하는 것을 막는다.
-  $('#menu-form')
-    .addEventListener('submit', (e) => {
-      e.preventDefault()
+  /**
+   * @param {Event} e
+   */
+  const soldOutMenu = (e) => {
+    const menuId = e.target.closest('li').dataset.menuId
+    this.menu[this.currentCategory][menuId].soldOut = !this.menu[this.currentCategory][menuId].soldOut
+    store.setLocalStorage(this.menu)
+    render()
+  }
+
+  const initEventListener = () => {
+    // form 태그가 id 값을 전송하는 것을 막는다.
+    $('#menu-form')
+      .addEventListener('submit', (e) => {
+        e.preventDefault()
+      })
+
+    $('#menu-submit-button').addEventListener('click', addMenuName)
+
+    $('#menu-list').addEventListener('click', (e) => {
+      if (e.target.classList.contains('menu-edit-button')) {
+        editMenuName(e)
+        return
+      }
+
+      if (e.target.classList.contains('menu-remove-button')) {
+        removeMenuName(e)
+        return
+      }
+
+      if (e.target.classList.contains('menu-sold-out-button')) {
+        soldOutMenu(e)
+        return
+      }
     })
 
-  $('#menu-submit-button').addEventListener('click', addMenuName)
+    // 메뉴 입력값을 받는다.
+    $("#menu-name")
+      .addEventListener("keypress", (e) => {
+        // q 버튼을 눌렀을 때, alert 창이 뜨게 돼서 예외 처리
+        if (e.key !== 'Enter') return
 
-  $('#menu-list').addEventListener('click', (e) => {
-    if (e.target.classList.contains('menu-edit-button')) {
-      editMenuName(e)
-    }
+        addMenuName()
+      })
 
-    if (e.target.classList.contains('menu-remove-button')) {
-      removeMenuName(e)
-    }
-  })
-
-  // 메뉴 입력값을 받는다.
-  $("#menu-name")
-    .addEventListener("keypress", (e) => {
-      // q 버튼을 눌렀을 때, alert 창이 뜨게 돼서 예외 처리
-      if (e.key !== 'Enter') return
-
-      addMenuName()
+    $('nav').addEventListener('click', (e) => {
+      const hasCategoryName = e.target.classList.contains('cafe-category-name')
+      if (hasCategoryName) {
+        const categoryName = e.target.dataset.categoryName
+        this.currentCategory = categoryName
+        $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`
+        render()
+      }
     })
-
-  $('nav').addEventListener('click', (e) => {
-    const hasCategoryName = e.target.classList.contains('cafe-category-name')
-    if (hasCategoryName) {
-      const categoryName = e.target.dataset.categoryName
-      this.currentCategory = categoryName
-      $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`
-      render()
-    }
-  })
+  }
 }
 
 const app = new App()
