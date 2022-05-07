@@ -1,17 +1,10 @@
 import Router from 'koa-router'
 
-import { Context } from '@/types/context'
-import { mockMenus } from './mocks/mockMenu'
+import { MenuMiddleware } from './menu.middleware'
 
 const menuRouter = new Router()
+const menuMiddleware = new MenuMiddleware()
 
-menuRouter.get('/api/menus/:category', async (ctx: Context) => {
-  const { category } = ctx.params
-  try {
-    ctx.body = { [category]: mockMenus[category] }
-  } catch (error) {
-    console.error(error)
-  }
-})
+menuRouter.get('/api/menus/:category', menuMiddleware.getMenusByCategory)
 
 export default menuRouter
