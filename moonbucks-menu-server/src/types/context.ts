@@ -1,3 +1,3 @@
-import { RouterContext } from 'koa-router'
+import { RouterContext as KoaRouterContext } from 'koa-router'
 
-export type Context<T = unknown> = RouterContext<T>
+export type RouterContext<T = unknown> = KoaRouterContext<T>
