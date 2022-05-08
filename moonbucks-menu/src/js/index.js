@@ -13,6 +13,19 @@ const MenuAPI = {
     })
 
     return response.json()
+  },
+  async createMenuInCategory(category, name) {
+    const response = await fetch(`${baseUrl}/category/${category}/menu`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name,
+      })
+    })
+
+    if (!response.ok) console.error('에러가 발생했습니다!')
   }
 }
 
@@ -84,19 +97,7 @@ class App {
       return
     }
 
-    await fetch(`${this.baseUrl}/category/${this.currentCategory}/menu`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: menuName,
-      })
-    })
-    .then((response) => {
-      return response.json()
-    })
-    .catch(error => console.error(error))
+    await MenuAPI.createMenuInCategory(this.currentCategory, menuName)
 
     const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
     this.menu[this.currentCategory] = allMenuByCategory
@@ -179,12 +180,15 @@ class App {
         this.addMenuName()
       })
 
-    $('nav').addEventListener('click', (e) => {
+    // 버튼을 클릭했을 때 메뉴가 바뀐다.
+    $('nav').addEventListener('click', async (e) => {
       const hasCategoryName = e.target.classList.contains('cafe-category-name')
       if (hasCategoryName) {
         const categoryName = e.target.dataset.categoryName
         this.currentCategory = categoryName
         $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`
+        const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
+        this.menu[this.currentCategory] = allMenuByCategory
         this.render()
       }
     })
