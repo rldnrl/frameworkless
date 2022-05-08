@@ -55,9 +55,9 @@ class App {
   }
 
   render() {
-    const templates = this.menu[this.currentCategory].map((menuName, index) => `
+    const templates = this.menu[this.currentCategory].map((menu, index) => `
       <li data-menu-id=${index} class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 ${this.menu[this.currentCategory][index].soldOut ? 'sold-out' : ''} menu-name">${menuName.name}</span>
+        <span class="w-100 pl-2 ${this.menu[this.currentCategory][index].soldOut ? 'sold-out' : ''} menu-name">${menu.name}</span>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
