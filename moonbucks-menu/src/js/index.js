@@ -40,6 +40,17 @@ const MenuAPI = {
     if (!response.ok) console.error('에러가 발생했습니다!')
 
     return response.json()
+  },
+  async toggleSoldOutMenu(category, id) {
+    const response = await fetch(`${baseUrl}/category/${category}/menu/${id}/soldout`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    if (!response.ok) console.error('에러가 발생했습니다!')
+
+    return response.json()
   }
 }
 
@@ -71,7 +82,7 @@ class App {
   render() {
     const templates = this.menu[this.currentCategory].map((menu, index) => `
       <li data-menu-id=${menu.id} class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 ${this.menu[this.currentCategory][index].soldOut ? 'sold-out' : ''} menu-name">${menu.name}</span>
+        <span class="w-100 pl-2 ${this.menu[this.currentCategory][index].isSoldOut ? 'sold-out' : ''} menu-name">${menu.name}</span>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -153,10 +164,11 @@ class App {
   /**
    * @param {Event} e
    */
-  soldOutMenu(e) {
+  async soldOutMenu(e) {
     const menuId = e.target.closest('li').dataset.menuId
-    this.menu[this.currentCategory][menuId].soldOut = !this.menu[this.currentCategory][menuId].soldOut
-    store.setLocalStorage(this.menu)
+    await MenuAPI.toggleSoldOutMenu(this.currentCategory, menuId)
+    const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
+    this.menu[this.currentCategory] = allMenuByCategory
     this.render()
   }
 
