@@ -1,8 +1,24 @@
 import { $ } from './utils.js'
 import store from './store.js'
 
+const baseUrl = 'http://localhost:4000/api'
+
+const MenuAPI = {
+  async fetchAllMenuByCategory(category) {
+    const response = await fetch(`${baseUrl}/category/${category}/menu`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+
+    return response.json()
+  }
+}
+
 class App {
   constructor() {
+    this.baseUrl = 'http://localhost:4000/api'
     this.menu = {
       espresso: [],
       frappuccino: [],
@@ -13,10 +29,14 @@ class App {
     this.currentCategory = 'espresso'
   }
 
-  init() {
+  async init() {
     if (store.getLocalStorage()) {
       this.menu = JSON.parse(store.getLocalStorage())
     }
+
+    const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
+    this.menu[this.currentCategory] = allMenuByCategory
+
     this.render()
     this.initEventListener()
   }
@@ -55,7 +75,7 @@ class App {
     $('.menu-count').innerText = `총 ${menuCount}개`
   }
 
-  addMenuName() {
+  async addMenuName() {
     const menuName = $("#menu-name").value
 
     // Input이 빈 값이면 입력을 받지 않는다.
@@ -64,9 +84,22 @@ class App {
       return
     }
 
-    this.menu[this.currentCategory].push({ name: menuName })
-    store.setLocalStorage(this.menu)
+    await fetch(`${this.baseUrl}/category/${this.currentCategory}/menu`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: menuName,
+      })
+    })
+    .then((response) => {
+      return response.json()
+    })
+    .catch(error => console.error(error))
 
+    const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
+    this.menu[this.currentCategory] = allMenuByCategory
     this.render()
     $('#menu-name').value = ''
   }
