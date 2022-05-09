@@ -29,7 +29,8 @@ class App {
   async render() {
     const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
     this.menu[this.currentCategory] = allMenuByCategory
-    const templates = this.menu[this.currentCategory].map((menu, index) => `
+
+    const templates = this.menu[this.currentCategory].map((menu) => `
       <li data-menu-id=${menu.id} class="menu-list-item d-flex items-center py-2">
         <span class="w-100 pl-2 ${menu.isSoldOut ? 'sold-out' : ''} menu-name">${menu.name}</span>
         <button
