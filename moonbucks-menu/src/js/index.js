@@ -19,9 +19,6 @@ class App {
       this.menu = JSON.parse(store.getLocalStorage())
     }
 
-    const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
-    this.menu[this.currentCategory] = allMenuByCategory
-
     this.render()
     this.initEventListener()
   }
