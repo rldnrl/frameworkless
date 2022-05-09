@@ -1,62 +1,9 @@
 import { $ } from './utils.js'
 import store from './store.js'
-
-const baseUrl = 'http://localhost:4000/api'
-
-const MenuAPI = {
-  async fetchAllMenuByCategory(category) {
-    const response = await fetch(`${baseUrl}/category/${category}/menu`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    })
-
-    return response.json()
-  },
-  async createMenuInCategory(category, name) {
-    const response = await fetch(`${baseUrl}/category/${category}/menu`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-      })
-    })
-
-    if (!response.ok) console.error('에러가 발생했습니다!')
-  },
-  async updateMenu(category, id, name) {
-    const response = await fetch(`${baseUrl}/category/${category}/menu/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-      })
-    })
-    if (!response.ok) console.error('에러가 발생했습니다!')
-
-    return response.json()
-  },
-  async toggleSoldOutMenu(category, id) {
-    const response = await fetch(`${baseUrl}/category/${category}/menu/${id}/soldout`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    if (!response.ok) console.error('에러가 발생했습니다!')
-
-    return response.json()
-  }
-}
+import MenuAPI from './menuApi.js'
 
 class App {
   constructor() {
-    this.baseUrl = 'http://localhost:4000/api'
     this.menu = {
       espresso: [],
       frappuccino: [],
@@ -151,11 +98,12 @@ class App {
    * @param {Event} e
    * Menu를 삭제하는 함수
    */
-  removeMenuName(e) {
+  async removeMenuName(e) {
     const menuId = e.target.closest('li').dataset.menuId
     if (confirm('정말 삭제하시겠습니까?')) {
-      this.menu[this.currentCategory].splice(Number(menuId), 1)
-      store.setLocalStorage(this.menu)
+      await MenuAPI.deleteMenu(this.currentCategory, menuId)
+      const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
+      this.menu[this.currentCategory] = allMenuByCategory
       this.render()
       this.updateMenuCount()
     }
