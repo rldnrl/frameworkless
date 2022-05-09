@@ -1,58 +1,25 @@
+import { HTTP_METHOD, request } from "./utils/api.js"
+
 const baseUrl = 'http://localhost:4000/api'
 
 export default {
   async fetchAllMenuByCategory(category) {
-    const response = await fetch(`${baseUrl}/category/${category}/menu`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    })
-
+    const response = await request(`${baseUrl}/category/${category}/menu`)
     return response.json()
   },
   async createMenuInCategory(category, name) {
-    const response = await fetch(`${baseUrl}/category/${category}/menu`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-      })
-    })
-
-    if (!response.ok) console.error('에러가 발생했습니다!')
+    const response = await request(`${baseUrl}/category/${category}/menu`, HTTP_METHOD.POST({ name }))
+    return response.json()
   },
   async updateMenu(category, id, name) {
-    const response = await fetch(`${baseUrl}/category/${category}/menu/${id}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-      })
-    })
-    if (!response.ok) console.error('에러가 발생했습니다!')
-
+    const response = await request(`${baseUrl}/category/${category}/menu/${id}`, HTTP_METHOD.PUT({ name }) )
     return response.json()
   },
   async toggleSoldOutMenu(category, id) {
-    const response = await fetch(`${baseUrl}/category/${category}/menu/${id}/soldout`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    if (!response.ok) console.error('에러가 발생했습니다!')
-
+    const response = await request(`${baseUrl}/category/${category}/menu/${id}/soldout`, HTTP_METHOD.PUT())
     return response.json()
   },
-  async deleteMenu(category, id) {
-    const response = await fetch(`${baseUrl}/category/${category}/menu/${id}`, {
-      method: 'DELETE',
-    })
-    if (!response.ok) console.error('에러가 발생했습니다!')
+  deleteMenu(category, id) {
+    return request(`${baseUrl}/category/${category}/menu/${id}`, HTTP_METHOD.DELETE())
   }
 }
