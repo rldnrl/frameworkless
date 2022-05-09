@@ -26,10 +26,12 @@ class App {
     this.initEventListener()
   }
 
-  render() {
+  async render() {
+    const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
+    this.menu[this.currentCategory] = allMenuByCategory
     const templates = this.menu[this.currentCategory].map((menu, index) => `
       <li data-menu-id=${menu.id} class="menu-list-item d-flex items-center py-2">
-        <span class="w-100 pl-2 ${this.menu[this.currentCategory][index].isSoldOut ? 'sold-out' : ''} menu-name">${menu.name}</span>
+        <span class="w-100 pl-2 ${menu.isSoldOut ? 'sold-out' : ''} menu-name">${menu.name}</span>
         <button
           type="button"
           class="bg-gray-50 text-gray-500 text-sm mr-1 menu-sold-out-button"
@@ -66,13 +68,18 @@ class App {
     // Input이 빈 값이면 입력을 받지 않는다.
     if (menuName === '') {
       alert('값을 입력해주세요')
+      $('#menu-name').value = ''
+      return
+    }
+
+    const duplicatedItem = this.menu[this.currentCategory].find((menuItem) => menuItem.name === menuName)
+    if (duplicatedItem) {
+      alert('이미 등록된 메뉴입니다. 다시 입력해주세요')
       return
     }
 
     await MenuAPI.createMenuInCategory(this.currentCategory, menuName)
-
-    const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
-    this.menu[this.currentCategory] = allMenuByCategory
+    
     this.render()
     $('#menu-name').value = ''
   }
@@ -88,8 +95,6 @@ class App {
     const editedMenuName = prompt('메뉴명을 수정하세요.', $menuName.innerText)
     if (!editedMenuName) return
     await MenuAPI.updateMenu(this.currentCategory, menuId, editedMenuName)
-    const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
-    this.menu[this.currentCategory] = allMenuByCategory
     this.render()
   }
 
@@ -102,8 +107,6 @@ class App {
     const menuId = e.target.closest('li').dataset.menuId
     if (confirm('정말 삭제하시겠습니까?')) {
       await MenuAPI.deleteMenu(this.currentCategory, menuId)
-      const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
-      this.menu[this.currentCategory] = allMenuByCategory
       this.render()
       this.updateMenuCount()
     }
@@ -115,9 +118,20 @@ class App {
   async soldOutMenu(e) {
     const menuId = e.target.closest('li').dataset.menuId
     await MenuAPI.toggleSoldOutMenu(this.currentCategory, menuId)
-    const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
-    this.menu[this.currentCategory] = allMenuByCategory
     this.render()
+  }
+
+  /**
+   * @param {Event} e
+   */
+  changeCategory = (e) => {
+    const hasCategoryName = e.target.classList.contains('cafe-category-name')
+    if (hasCategoryName) {
+      const categoryName = e.target.dataset.categoryName
+      this.currentCategory = categoryName
+      $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`
+      this.render()
+    }
   }
 
   initEventListener() {
@@ -156,17 +170,7 @@ class App {
       })
 
     // 버튼을 클릭했을 때 메뉴가 바뀐다.
-    $('nav').addEventListener('click', async (e) => {
-      const hasCategoryName = e.target.classList.contains('cafe-category-name')
-      if (hasCategoryName) {
-        const categoryName = e.target.dataset.categoryName
-        this.currentCategory = categoryName
-        $('#category-title').innerText = `${e.target.innerText} 메뉴 관리`
-        const allMenuByCategory = await MenuAPI.fetchAllMenuByCategory(this.currentCategory)
-        this.menu[this.currentCategory] = allMenuByCategory
-        this.render()
-      }
-    })
+    $('nav').addEventListener('click', this.changeCategory)
   }
 }
 
