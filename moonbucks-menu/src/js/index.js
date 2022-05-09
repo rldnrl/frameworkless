@@ -1,4 +1,4 @@
-import { $ } from './utils.js'
+import { $ } from './utils/dom.js'
 import store from './store.js'
 import MenuAPI from './menuApi.js'
 
