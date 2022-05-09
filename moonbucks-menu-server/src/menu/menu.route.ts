@@ -10,6 +10,9 @@ menuRouter.get(
   menuMiddleware.getMenusByCategory
 )
 
-menuRouter.post('/api/menu/:category', menuMiddleware.createMenusByCategory)
+menuRouter.post(
+  '/api/category/:category/menu',
+  menuMiddleware.createMenusByCategory
+)
 
 export default menuRouter
