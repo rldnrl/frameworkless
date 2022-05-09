@@ -2,7 +2,7 @@ import { Category } from './category'
 
 export type Menu = {
   name: string
-  soldOut: boolean
+  isSoldOut: boolean
 }
 
 export type MenuByCategory = {

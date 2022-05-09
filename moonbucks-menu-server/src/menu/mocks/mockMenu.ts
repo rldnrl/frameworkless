@@ -4,15 +4,15 @@ export const mockMenus: MenuByCategory = {
   espresso: [
     {
       name: 'Americano',
-      soldOut: false,
+      isSoldOut: false,
     },
     {
       name: 'Latte',
-      soldOut: true,
+      isSoldOut: true,
     },
     {
       name: 'Vanilla Latte',
-      soldOut: false,
+      isSoldOut: false,
     },
   ],
   frappuccino: [],
